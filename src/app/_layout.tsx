@@ -30,7 +30,7 @@ export default function Layout() {
 
     return (
         <AuthProvider>
-            <StatusBar style="auto" />
+            <StatusBar style="inverted" />
             <Slot />
         </AuthProvider>
     )

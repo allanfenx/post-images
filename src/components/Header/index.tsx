@@ -33,6 +33,6 @@ const styles = StyleSheet.create({
         alignItems: "center"
     },
     zindex: {
-        zIndex: 5
+        zIndex: 10
     }
 })

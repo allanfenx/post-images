@@ -24,13 +24,10 @@ type UploadProps = {
 
 export default function Home() {
 
-    const { logout, token } = useContext(authContext)
+    const { logout } = useContext(authContext)
 
     const [select, setSelected] = useState("All")
     const [uploads, setUploads] = useState([] as UploadProps[])
-    const [visible, setVisible] = useState(false);
-    const [openExcluir, setOpenExcluir] = useState(false);
-    const [image, setimage] = useState(0)
 
 
 
@@ -56,9 +53,6 @@ export default function Home() {
 
         } catch (error: any) {
 
-            if (error.response.status === 401) {
-                return router.replace("/(routes)")
-            }
             console.log(error);
         }
     }
@@ -120,12 +114,12 @@ export default function Home() {
 
             <View style={styles.header}>
                 <FlatList data={optionsList} keyExtractor={item => item.id.toString()}
-                    contentContainerStyle={{ columnGap: 14 }}
+                    contentContainerStyle={{ columnGap: 14, paddingHorizontal: 10 }}
                     horizontal
                     showsHorizontalScrollIndicator={false}
                     renderItem={({ item }) => {
                         return (
-                            <Pressable onPress={() => handleFilter(item.title)}  >
+                            <Pressable onPress={() => handleFilter(item.title)} style={{ zIndex: 5 }} >
                                 <Text style={[styles.text, select === item.title && {
                                     borderBottomWidth: 2,
                                     borderColor: colors.truegray
