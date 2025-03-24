@@ -72,7 +72,7 @@ export default function Details() {
         }
     }, [upload.url])
 
-    const size = upload.filesize / 1000 / 1000
+    const size = upload.filesize / 1024 / 1024
 
     return (
         <ScrollView style={styles.container}>

@@ -4,7 +4,7 @@ import { authContext } from "@/context/Authcontext";
 import colors from "@/styles/colors";
 import { router } from "expo-router";
 import { useContext, useState } from "react";
-import { ActivityIndicator, Alert, Image, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { ActivityIndicator, Alert, Image, KeyboardAvoidingView, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { launchImageLibraryAsync } from "expo-image-picker";
 import { Entypo } from "@expo/vector-icons";
 import fonts from "@/styles/fonts";
@@ -23,14 +23,17 @@ export default function Upload() {
     const [disable, setDisable] = useState(false);
     const [items, setItems] = useState(options)
     const [open, setOpen] = useState(false)
+    const [fileName, setFileName] = useState<null | string | undefined>(null);
 
     async function uploadImage() {
 
         const result = await launchImageLibraryAsync({ mediaTypes: ["images"] })
 
         if (!result.canceled) {
+            setFileName(result.assets[0].fileName)
             setImage(result.assets[0].uri)
         }
+
     }
 
     async function handleSendImage() {
@@ -45,7 +48,9 @@ export default function Upload() {
             Alert.alert("Category não pode ser vazio!")
         }
 
-        data.append("file", { name: "file", type: "image/jpg", uri: image } as any);
+        const [, mimetype] = fileName?.split(".") as string[];
+
+        data.append("file", { name: `${title}.${mimetype}`, type: "image/jpg", uri: image } as any);
         data.append("category", category);
         data.append("title", title);
 
@@ -78,34 +83,38 @@ export default function Upload() {
                     </View>}
             </View>
 
+            <KeyboardAvoidingView behavior="position" >
 
-            <View style={styles.wrapInput}>
-                <DropDownPicker
-                    open={open}
-                    value={category}
-                    items={items}
-                    setOpen={setOpen}
-                    setValue={setCategory}
-                    setItems={setItems}
-                    listMode="SCROLLVIEW"
-                    placeholder="Category"
-                    style={{ height: 70 }}
-                    textStyle={styles.placeholderStyle} />
 
-                <Input text="title" icon="text-height" value={title} onChangeText={setTitle} />
+                <View style={styles.wrapInput}>
+                    <DropDownPicker
+                        open={open}
+                        value={category}
+                        items={items}
+                        setOpen={setOpen}
+                        setValue={setCategory}
+                        setItems={setItems}
+                        listMode="SCROLLVIEW"
+                        placeholder="Category"
+                        style={{ height: 70 }}
+                        textStyle={styles.placeholderStyle} />
 
-                <View>
-                    <Pressable style={styles.upload} onPress={uploadImage}>
-                        <Entypo name="share-alternative" size={24} color={colors.gray} />
-                    </Pressable>
+                    <Input text="title" icon="text-height" value={title} onChangeText={setTitle} />
+
+                    <View>
+                        <Pressable style={styles.upload} onPress={uploadImage}>
+                            <Entypo name="share-alternative" size={24} color={colors.gray} />
+                        </Pressable>
+                    </View>
                 </View>
-            </View>
 
+            </KeyboardAvoidingView>
 
             <Pressable style={styles.button} disabled={disable} onPress={handleSendImage} >
                 {disable ? <ActivityIndicator /> :
                     <Text style={styles.text}>Send image</Text>}
             </Pressable>
+
         </View>
     )
 }
